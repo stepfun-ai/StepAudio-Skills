@@ -94,15 +94,13 @@ Backed by [`POST https://api.stepfun.com/v1/audio/speech`](https://platform.step
 # Minimal
 bash skills/step-tts/scripts/tts.sh speak \
   -t "智能阶跃，十倍每一个人的可能" \
-  --model step-tts-mini \
-  --voice cixingnansheng \
-  -o step.mp3
+  -o step.opus
 
-# From text file
+# From text file with explicit overrides
 bash skills/step-tts/scripts/tts.sh speak \
   -f article.txt \
-  --model step-tts-2 \
-  --voice elegantgentle-female \
+  --model step-tts-mini \
+  --voice cixingnansheng \
   --response-format mp3 \
   -o article.mp3
 
@@ -114,18 +112,18 @@ bash skills/step-tts/scripts/tts.sh speak \
   --speed 1.1 \
   --volume 1.2 \
   --emotion 高兴 \
-  -o cheer.mp3
+  -o cheer.opus
 ```
 
 **Key options (mapped 1:1 to StepFun audio/speech API):**
 
-- `--model` (required): `step-tts-2` | `step-tts-mini` | `step-tts-vivid`
-- `--voice` (required): one of StepFun 官方音色 `voice` / `voice_id`，例如：
+- `--model` (optional, default `step-tts-2`): `step-tts-2` | `step-tts-mini` | `step-tts-vivid`
+- `--voice` (optional, default `elegantgentle-female`): one of StepFun 官方音色 `voice` / `voice_id`，例如：
   - `cixingnansheng`
   - `elegantgentle-female`
   - `yuanqishaonv`
   - See full list in 官方文档: [`官方音色清单`](https://platform.stepfun.com/docs/zh/guide/tts#%E5%AE%98%E6%96%B9%E9%9F%B3%E8%89%B2%E6%B8%85%E5%8D%95)
-- `--response-format`: `wav` | `mp3` | `flac` | `opus` | `pcm` (default: `mp3`)
+- `--response-format`: `wav` | `mp3` | `flac` | `opus` | `pcm` (default: `opus`)
 - `--speed`: `0.5~2.0` （语速）
 - `--volume`: `0.1~2.0` （音量）
 - `--emotion`: 情绪标签，对应 `voice_label.emotion`（如：`高兴`、`悲伤`、`生气` 等）
@@ -200,6 +198,8 @@ When using this skill:
 
 - **Prefer StepFun voices / labels** as documented in [`音频合成最佳实践`](https://platform.stepfun.com/docs/zh/guide/tts#%E5%AE%98%E6%96%B9%E9%9F%B3%E8%89%B2%E6%B8%85%E5%8D%95) instead of Noiz or Kokoro names.
 - When the user asks for a type of voice (e.g. “营销女声”, “有声书男声”), choose an appropriate `voice` and optional emotion/style tags from the StepFun docs. The guide at [`https://platform.stepfun.com/docs/zh/guide/tts`](https://platform.stepfun.com/docs/zh/guide/tts) contains per‑scenario recommendations and the full 官方音色清单。
-- In the 官方音色清单 table, the **first 7 voices are the most recommended defaults by StepFun**. When the user does not care about the exact voice and just wants “good” audio, prefer those top 7 voices as sensible defaults.
+- For ordinary `speak` tasks, if the user does **not** specify a voice, default to `elegantgentle-female`. If the user explicitly specifies a voice, use the user-provided voice instead.
+- For ordinary `speak` tasks, if the user does **not** specify a model, default to `step-tts-2`. If the user explicitly specifies a model, use the user-provided model instead.
+- If the user does **not** specify an output format, default to `opus`.
 - For cloning tasks, clearly inform the user that they must first upload audio to StepFun to get a `file_id`, then this skill can call `clone-voice` to create a reusable voice ID.
 - If the user previously used the `tts` skill with Noiz, you can suggest migrating parameters (text, SRT, high-level emotion) while switching backend to StepFun via this skill.

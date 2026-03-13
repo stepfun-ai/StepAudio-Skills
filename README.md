@@ -77,10 +77,14 @@ Generate audio:
 ```bash
 bash skills/step-tts/scripts/tts.sh speak \
   -t "智能阶跃，十倍每一个人的可能" \
-  --model step-tts-mini \
-  --voice cixingnansheng \
-  -o step.mp3
+  -o step.opus
 ```
+
+Defaults for `speak`:
+
+- `--model`: `step-tts-2`
+- `--voice`: `elegantgentle-female`
+- `--response-format`: `opus`
 
 Clone a voice (using an existing `file_id` from StepFun Files API):
 

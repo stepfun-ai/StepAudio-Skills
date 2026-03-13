@@ -19,9 +19,7 @@ Examples:
 
   # Simple TTS
   tts.sh speak -t "智能阶跃，十倍每一个人的可能" \
-    --model step-tts-mini \
-    --voice cixingnansheng \
-    -o step.mp3
+    -o step.opus
 
   # With emotion / style
   tts.sh speak -t "今天的学习进度很棒，我们继续加油！" \
@@ -29,7 +27,7 @@ Examples:
     --voice livelybreezy-female \
     --emotion 高兴 \
     --speed 1.1 \
-    -o cheer.mp3
+    -o cheer.opus
 
   # Clone a voice
   tts.sh clone-voice \
@@ -50,11 +48,13 @@ Required:
   -t, --text TEXT           Text to synthesize
   -f, --text-file FILE      Or: file containing text (UTF-8)
   -o, --output FILE         Output audio file path
-  --model NAME              StepFun TTS model: step-tts-2 | step-tts-mini | step-tts-vivid
-  --voice ID                StepFun voice ID / official voice name
 
 Optional:
-  --response-format FMT     wav | mp3 | flac | opus | pcm (default: mp3)
+  --model NAME              StepFun TTS model: step-tts-2 | step-tts-mini | step-tts-vivid
+                            (default: step-tts-2)
+  --voice ID                StepFun voice ID / official voice name
+                            (default: elegantgentle-female)
+  --response-format FMT     wav | mp3 | flac | opus | pcm (default: opus)
   --speed NUM               Speaking rate (0.5 ~ 2.0, default 1.0)
   --volume NUM              Volume (0.1 ~ 2.0, default 1.0)
   --emotion LABEL           Emotion label -> voice_label.emotion
@@ -287,8 +287,8 @@ PY
 # ── Commands ─────────────────────────────────────────────────────────
 
 cmd_speak() {
-  local text="" text_file="" output="" model="" voice=""
-  local response_format="mp3" speed="" volume=""
+  local text="" text_file="" output="" model="step-tts-2" voice="elegantgentle-female"
+  local response_format="opus" speed="" volume=""
   local emotion="" style="" language="" sample_rate="24000"
 
   while [[ $# -gt 0 ]]; do
@@ -316,13 +316,6 @@ cmd_speak() {
   if [[ -z "$text" && -z "$text_file" ]]; then
     echo "Error: --text (-t) or --text-file (-f) is required." >&2; exit 1
   fi
-  if [[ -z "$model" ]]; then
-    echo "Error: --model is required (step-tts-2 | step-tts-mini | step-tts-vivid)." >&2; exit 1
-  fi
-  if [[ -z "$voice" ]]; then
-    echo "Error: --voice is required (StepFun voice id / name)." >&2; exit 1
-  fi
-
   if [[ -n "$text_file" && -z "$text" ]]; then
     text="$(<"$text_file")"
   fi

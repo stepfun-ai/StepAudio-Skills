@@ -40,4 +40,96 @@ if bash "$SCRIPT_PATH" clone-voice \
 fi
 grep -q -- "--file-id is required" "$TMP_DIR/missing-file-id.stderr"
 
+echo "[test] speak uses default model voice and format"
+FAKE_BIN_DIR="$TMP_DIR/fake-bin"
+mkdir -p "$FAKE_BIN_DIR"
+cat >"$FAKE_BIN_DIR/curl" <<'EOF'
+#!/usr/bin/env bash
+set -euo pipefail
+
+payload=""
+headers_file=""
+out_file=""
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --data)
+      payload="$2"
+      shift 2
+      ;;
+    -D)
+      headers_file="$2"
+      shift 2
+      ;;
+    -o)
+      out_file="$2"
+      shift 2
+      ;;
+    -H| -X| -w)
+      shift 2
+      ;;
+    -s|-S|-sS)
+      shift
+      ;;
+    *)
+      shift
+      ;;
+  esac
+done
+
+printf '%s' "$payload" >"$FAKE_CURL_PAYLOAD_FILE"
+printf 'Content-Type: audio/ogg\r\n' >"$headers_file"
+printf 'fake audio' >"$out_file"
+printf '200'
+EOF
+chmod +x "$FAKE_BIN_DIR/curl"
+
+DEFAULT_PAYLOAD="$TMP_DIR/default-payload.json"
+STEPFUN_API_KEY=test-key \
+FAKE_CURL_PAYLOAD_FILE="$DEFAULT_PAYLOAD" \
+PATH="$FAKE_BIN_DIR:$PATH" \
+bash "$SCRIPT_PATH" speak \
+  -t "hello default" \
+  -o "$TMP_DIR/default.opus" \
+  >"$TMP_DIR/default.stdout" 2>"$TMP_DIR/default.stderr"
+
+python3 - "$DEFAULT_PAYLOAD" <<'PY'
+import json
+import sys
+
+payload_path = sys.argv[1]
+with open(payload_path, "r", encoding="utf-8") as fh:
+    payload = json.load(fh)
+
+assert payload["model"] == "step-tts-2", payload
+assert payload["voice"] == "elegantgentle-female", payload
+assert payload["response_format"] == "opus", payload
+PY
+
+echo "[test] speak respects explicit model voice and format"
+OVERRIDE_PAYLOAD="$TMP_DIR/override-payload.json"
+STEPFUN_API_KEY=test-key \
+FAKE_CURL_PAYLOAD_FILE="$OVERRIDE_PAYLOAD" \
+PATH="$FAKE_BIN_DIR:$PATH" \
+bash "$SCRIPT_PATH" speak \
+  -t "hello override" \
+  --model step-tts-mini \
+  --voice cixingnansheng \
+  --response-format mp3 \
+  -o "$TMP_DIR/override.mp3" \
+  >"$TMP_DIR/override.stdout" 2>"$TMP_DIR/override.stderr"
+
+python3 - "$OVERRIDE_PAYLOAD" <<'PY'
+import json
+import sys
+
+payload_path = sys.argv[1]
+with open(payload_path, "r", encoding="utf-8") as fh:
+    payload = json.load(fh)
+
+assert payload["model"] == "step-tts-mini", payload
+assert payload["voice"] == "cixingnansheng", payload
+assert payload["response_format"] == "mp3", payload
+PY
+
 echo "TTS validation tests passed."
