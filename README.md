@@ -1,14 +1,16 @@
-## StepAudio-Skills (StepFun TTS + ASR skills)
+## StepAudio-Skills (StepFun TTS + ASR + Audio Chat skills)
 
-This repository combines two standalone skills:
+This repository combines three standalone StepFun skills:
 
 - `step-tts`: text-to-speech and voice cloning via StepFun TTS
 - `step-asr`: speech-to-text via StepFun ASR streaming API
+- `stepfun-step-audio-r1-1`: non-streaming audio chat turns via StepFun Chat Completions (`step-audio-r1.1`)
 
-The two skills share one repo layout, while their underlying implementations remain separate:
+The three skills share one repo layout, while their underlying implementations remain separate:
 
 - TTS stays in shell: `skills/step-tts/scripts/tts.sh`
 - ASR stays in Python: `skills/step-asr/scripts/transcribe.py`
+- Audio chat stays in Python: `skills/stepfun-step-audio-r1-1/scripts/stepfun_audio_chat.py`
 
 ### Layout
 
@@ -16,20 +18,25 @@ The two skills share one repo layout, while their underlying implementations rem
 - `skills/step-tts/scripts/tts.sh`: Main TTS CLI entrypoint
 - `skills/step-asr/SKILL.md`: Agent-facing description, triggers, and usage examples for ASR
 - `skills/step-asr/scripts/transcribe.py`: Main ASR CLI entrypoint
+- `skills/stepfun-step-audio-r1-1/SKILL.md`: Agent-facing description, triggers, and usage examples for StepFun audio chat
+- `skills/stepfun-step-audio-r1-1/scripts/stepfun_audio_chat.py`: Main non-streaming StepFun audio chat CLI
 - `tests/test_step_tts_cli.sh`: Smoke tests for the TTS CLI help commands
 - `tests/test_step_asr_cli.sh`: Smoke tests for the ASR CLI help commands
+- `tests/test_stepfun_audio_r1_1_cli.sh`: Smoke tests for the audio-chat CLI
 
 ### Prerequisites
 
 - `bash`, `curl`, `python3`
 - A valid StepFun API key
+- Optional for `stepfun-step-audio-r1-1` local audio normalization: `ffmpeg` or macOS `afconvert`
 
 ### Shared API key setup
 
 - Preferred environment variable: `STEPFUN_API_KEY`
 - Legacy alias still accepted for compatibility: `STEP_API_KEY`
 - The `step-tts` config command stores the key in `~/.stepfun_api_key`
-- Both skills also read the legacy file `~/.step_api_key` if present
+- All three skills read `~/.stepfun_api_key`
+- All three skills also read the legacy file `~/.step_api_key` if present
 
 ### Basic usage
 
@@ -57,7 +64,13 @@ Install just the ASR skill:
 npx skills add . --full-depth --skill step-asr -y
 ```
 
-Install both skills to OpenClaw from a separate consumer project:
+Install just the audio-chat skill:
+
+```bash
+npx skills add . --full-depth --skill stepfun-step-audio-r1-1 -y
+```
+
+Install all three skills to OpenClaw from a separate consumer project:
 
 ```bash
 cd /path/to/another/project
@@ -129,6 +142,42 @@ Output as JSON:
 
 ```bash
 python3 skills/step-asr/scripts/transcribe.py /path/to/audio.ogg --json
+```
+
+### Audio chat quick start
+
+Reuse the shared StepFun API key from `~/.stepfun_api_key`, or export it directly:
+
+```bash
+export STEPFUN_API_KEY=YOUR_STEPFUN_API_KEY
+```
+
+Create a non-streaming text-in, audio-out turn:
+
+```bash
+python3 skills/stepfun-step-audio-r1-1/scripts/stepfun_audio_chat.py \
+  --prompt "用中文介绍一下苏州的春天，语气自然一点。" \
+  --voice wenrounansheng \
+  --format wav
+```
+
+Send text plus local audio input:
+
+```bash
+python3 skills/stepfun-step-audio-r1-1/scripts/stepfun_audio_chat.py \
+  --prompt "听完这段语音后，总结重点，并用更简洁的话复述。" \
+  --input-audio /path/to/input.wav \
+  --voice wenrounansheng \
+  --format wav
+```
+
+Inspect the generated payload without sending a network request:
+
+```bash
+python3 skills/stepfun-step-audio-r1-1/scripts/stepfun_audio_chat.py \
+  --prompt "测试 step-audio-r1.1 非流式 payload" \
+  --dry-run \
+  --print-json
 ```
 
 ### Development smoke tests

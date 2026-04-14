@@ -2,11 +2,12 @@
   "name": "step-audio-skills",
   "version": "0.1.0",
   "private": true,
-  "description": "Combined StepFun skills repo containing step-tts and step-asr, packaged in a NoizAI/skills-style layout for OpenClaw and similar environments.",
+  "description": "Combined StepFun skills repo containing step-tts, step-asr, and stepfun-step-audio-r1-1, packaged in a NoizAI/skills-style layout for OpenClaw and similar environments.",
   "scripts": {
-    "test": "npm run test:tts && npm run test:asr",
+    "test": "npm run test:tts && npm run test:asr && npm run test:audio-chat",
     "test:tts": "bash tests/test_step_tts_cli.sh && bash tests/test_step_tts_validation.sh",
-    "test:asr": "bash tests/test_step_asr_cli.sh && python3 tests/test_step_asr_unit.py"
+    "test:asr": "bash tests/test_step_asr_cli.sh && python3 tests/test_step_asr_unit.py",
+    "test:audio-chat": "bash tests/test_stepfun_audio_r1_1_cli.sh && python3 tests/test_stepfun_audio_r1_1_unit.py"
   },
   "license": "MIT"
 }
