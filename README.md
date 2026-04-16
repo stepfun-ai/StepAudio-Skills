@@ -1,16 +1,16 @@
-## StepAudio-Skills (StepFun TTS + ASR + Audio Chat skills)
+## StepAudio-Skills (StepFun TTS + ASR + Speech Reasoning skills)
 
 This repository combines three standalone StepFun skills:
 
 - `step-tts`: text-to-speech and voice cloning via StepFun TTS
 - `step-asr`: speech-to-text via StepFun ASR streaming API
-- `stepfun-step-audio-r1-1`: non-streaming audio chat turns via StepFun Chat Completions (`step-audio-r1.1`)
+- `stepfun-step-audio-r1-1`: non-streaming speech reasoning turns via StepFun Chat Completions (`step-audio-r1.1`)
 
 The three skills share one repo layout, while their underlying implementations remain separate:
 
 - TTS stays in shell: `skills/step-tts/scripts/tts.sh`
 - ASR stays in Python: `skills/step-asr/scripts/transcribe.py`
-- Audio chat stays in Python: `skills/stepfun-step-audio-r1-1/scripts/stepfun_audio_chat.py`
+- Speech reasoning stays in Python: `skills/stepfun-step-audio-r1-1/scripts/stepfun_audio_chat.py`
 
 ### Layout
 
@@ -18,11 +18,11 @@ The three skills share one repo layout, while their underlying implementations r
 - `skills/step-tts/scripts/tts.sh`: Main TTS CLI entrypoint
 - `skills/step-asr/SKILL.md`: Agent-facing description, triggers, and usage examples for ASR
 - `skills/step-asr/scripts/transcribe.py`: Main ASR CLI entrypoint
-- `skills/stepfun-step-audio-r1-1/SKILL.md`: Agent-facing description, triggers, and usage examples for StepFun audio chat
-- `skills/stepfun-step-audio-r1-1/scripts/stepfun_audio_chat.py`: Main non-streaming StepFun audio chat CLI
+- `skills/stepfun-step-audio-r1-1/SKILL.md`: Agent-facing description, triggers, and usage examples for StepFun speech reasoning
+- `skills/stepfun-step-audio-r1-1/scripts/stepfun_audio_chat.py`: Main non-streaming StepFun speech reasoning CLI
 - `tests/test_step_tts_cli.sh`: Smoke tests for the TTS CLI help commands
 - `tests/test_step_asr_cli.sh`: Smoke tests for the ASR CLI help commands
-- `tests/test_stepfun_audio_r1_1_cli.sh`: Smoke tests for the audio-chat CLI
+- `tests/test_stepfun_audio_r1_1_cli.sh`: Smoke tests for the StepFun speech reasoning CLI
 
 ### Prerequisites
 
@@ -64,7 +64,7 @@ Install just the ASR skill:
 npx skills add . --full-depth --skill step-asr -y
 ```
 
-Install just the audio-chat skill:
+Install just the speech reasoning skill:
 
 ```bash
 npx skills add . --full-depth --skill stepfun-step-audio-r1-1 -y
@@ -144,7 +144,7 @@ Output as JSON:
 python3 skills/step-asr/scripts/transcribe.py /path/to/audio.ogg --json
 ```
 
-### Audio chat quick start
+### Speech reasoning quick start
 
 Reuse the shared StepFun API key from `~/.stepfun_api_key`, or export it directly:
 
@@ -152,7 +152,7 @@ Reuse the shared StepFun API key from `~/.stepfun_api_key`, or export it directl
 export STEPFUN_API_KEY=YOUR_STEPFUN_API_KEY
 ```
 
-Create a non-streaming text-in, audio-out turn:
+Create a non-streaming speech-reasoning turn with text in and audio out:
 
 ```bash
 python3 skills/stepfun-step-audio-r1-1/scripts/stepfun_audio_chat.py \
@@ -161,7 +161,7 @@ python3 skills/stepfun-step-audio-r1-1/scripts/stepfun_audio_chat.py \
   --format wav
 ```
 
-Send text plus local audio input:
+Send text plus local audio input for a speech-reasoning turn:
 
 ```bash
 python3 skills/stepfun-step-audio-r1-1/scripts/stepfun_audio_chat.py \

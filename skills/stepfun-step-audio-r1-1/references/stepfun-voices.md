@@ -1,8 +1,9 @@
 # StepFun Voice Selection
 
-This skill targets `step-audio-r1.1` via Chat Completions, not the standalone
-TTS APIs. Even so, voice selection matters because `step-audio-r1.1` requires
-`audio.voice` whenever you request spoken output.
+This skill targets `step-audio-r1.1` via Chat Completions for speech
+reasoning, not the standalone TTS APIs. Even so, voice selection matters
+because `step-audio-r1.1` requires `audio.voice` whenever you request spoken
+output.
 
 ## Practical Rules
 
@@ -12,10 +13,10 @@ TTS APIs. Even so, voice selection matters because `step-audio-r1.1` requires
 - For production use, prefer explicit `--voice` instead of relying on the
   default.
 
-## Relationship Between Audio Chat And TTS
+## Relationship Between Speech Reasoning And TTS
 
-- `step-audio-r1.1`: speech understanding + speech generation through Chat
-  Completions
+- `step-audio-r1.1`: speech understanding + speech reasoning + speech
+  generation through Chat Completions
 - `step-audio-2` / `step-audio-2-mini`: newer speech models with stronger
   end-to-end capabilities and tool calling
 - `step-tts-2` / `step-tts-mini` / `step-tts-vivid`: dedicated TTS models for
@@ -27,7 +28,7 @@ dedicated StepFun TTS skill instead of this chat-completions skill.
 
 ## Official Voice Guidance
 
-According to StepFun audio-chat guidance:
+According to StepFun speech-reasoning guidance:
 
 - For `step-audio-2` models, docs show built-in voice ids including:
   - `wenrounansheng`

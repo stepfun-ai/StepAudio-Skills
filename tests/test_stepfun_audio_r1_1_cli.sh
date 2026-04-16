@@ -48,4 +48,4 @@ assert payload["modalities"] == ["text"], payload
 assert "audio" not in payload, payload
 PY
 
-echo "Audio chat CLI tests passed."
+echo "step-audio-r1.1 CLI tests passed."

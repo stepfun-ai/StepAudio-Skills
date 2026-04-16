@@ -1,6 +1,6 @@
 ---
 name: stepfun-step-audio-r1-1
-description: "Use this skill whenever the user wants to call StepFun Chat Completions with model step-audio-r1.1 for a non-streaming speech turn that can take text with optional local audio input and save the returned audio, transcript, and raw response object. Triggers include mentions of StepFun audio chat, step-audio-r1.1, non-streaming spoken replies through the Chat API, text+audio input to StepFun chat, or requests to inspect/save the raw response payload from StepFun audio chat."
+description: "Use this skill whenever the user wants to call StepFun Chat Completions with model step-audio-r1.1 for a non-streaming speech reasoning turn that can take text with optional local audio input and save the returned audio, transcript, and raw response object. Triggers include mentions of StepFun speech reasoning, step-audio-r1.1, non-streaming spoken reasoning through the Chat API, text+audio input to StepFun speech reasoning, or requests to inspect/save the raw response payload from StepFun step-audio-r1.1 runs."
 version: 0.1.1
 metadata:
   openclaw:
@@ -14,13 +14,13 @@ metadata:
     homepage: https://platform.stepfun.com/docs/zh/api-reference/chat/chat-completion-create
 ---
 
-# StepFun step-audio-r1.1
+# StepFun step-audio-r1.1 Speech Reasoning
 
 Call StepFun's `POST /v1/chat/completions` endpoint with `stream: false` and
 `model: step-audio-r1.1`.
 
-Use this skill when the user explicitly wants StepFun audio generation,
-speech-style replies through the Chat API, a standard non-streaming chat
+Use this skill when the user explicitly wants StepFun speech reasoning,
+spoken replies through the Chat API, a standard non-streaming chat
 completion object, or local audio input encoded as `input_audio`.
 
 Do not use this skill for realtime duplex voice sessions. Use StepFun Realtime
@@ -31,7 +31,7 @@ prefer `step-audio-2` instead of this skill.
 
 ## Quick Start
 
-Text in, audio out:
+Text in, speech reasoning out:
 
 ```bash
 python3 {baseDir}/scripts/stepfun_audio_chat.py \
@@ -47,7 +47,7 @@ python3 {baseDir}/scripts/stepfun_audio_chat.py \
   --list-voices
 ```
 
-Text + local audio in, audio out:
+Text + local audio in, speech reasoning out:
 
 ```bash
 python3 {baseDir}/scripts/stepfun_audio_chat.py \
@@ -158,7 +158,7 @@ Voice selection note:
 
 ## Workflow
 
-1. Confirm the user wants StepFun `step-audio-r1.1` through Chat API.
+1. Confirm the user wants StepFun `step-audio-r1.1` speech reasoning through Chat API.
 2. Choose whether the turn is text-only or text plus local audio input.
 3. Run the helper script with `stream: false`.
 4. Return the saved transcript, the audio file path, and any important response
